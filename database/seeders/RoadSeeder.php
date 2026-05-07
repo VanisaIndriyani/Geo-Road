@@ -723,15 +723,10 @@ TEXT;
         $rows = $this->parseRows($raw);
         foreach ($rows as $row) {
             [$namaRuas, $kecamatan] = $this->extractKecamatanFromNama($row['nama_ruas']);
+            $kabupaten = $this->normalizeKabupatenKota($row['kabupaten']);
             $kondisi = collect(Road::kondisiOptions())->random();
-            
-            // Khusus Pesisir Barat, pastikan ada yang rusak agar muncul di chart
-            if ($kabupaten === 'Kabupaten Pesisir Barat' && $row['no'] == 56) {
-                $kondisi = Road::KONDISI_RUSAK_BERAT;
-            }
 
             $prioritas = $kondisi === Road::KONDISI_RUSAK_BERAT ? 'Rekonstruksi' : collect($prioritasList)->random();
-            $kabupaten = $this->normalizeKabupatenKota($row['kabupaten']);
 
             $awal = $this->parseLatLngPair($row['awal']);
             $akhir = $this->parseLatLngPair($row['akhir']);
