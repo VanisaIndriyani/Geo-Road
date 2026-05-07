@@ -46,6 +46,9 @@ class WebgisController extends Controller
                 continue;
             }
 
+            $awal = $pointsLatLng[0];
+            $akhir = $pointsLatLng[count($pointsLatLng) - 1];
+
             $coordinates = array_map(function (array $pair) {
                 return [(float) $pair[1], (float) $pair[0]];
             }, $pointsLatLng);
@@ -83,6 +86,10 @@ class WebgisController extends Controller
                     'jenis_kerusakan' => $road->jenis_kerusakan,
                     'prioritas' => $road->prioritas,
                     'tahun' => $road->tahun,
+                    'awal_lat' => (float) $awal[0],
+                    'awal_lng' => (float) $awal[1],
+                    'akhir_lat' => (float) $akhir[0],
+                    'akhir_lng' => (float) $akhir[1],
                     'foto_url' => $road->foto_url,
                 ],
             ];
@@ -97,4 +104,3 @@ class WebgisController extends Controller
         ]);
     }
 }
-

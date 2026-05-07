@@ -84,11 +84,11 @@
                                     $badge = match ($road->kondisi) {
                                         'Baik' => 'success',
                                         'Rusak Ringan' => 'warning',
-                                        'Rusak Sedang' => 'orange',
+                                        'Rusak Sedang' => 'primary',
                                         'Rusak Berat' => 'danger',
                                         default => 'secondary',
                                     };
-                                    $badgeClass = $badge === 'orange' ? 'text-bg-warning' : "text-bg-{$badge}";
+                                    $badgeClass = "text-bg-{$badge}";
                                 @endphp
                                 <span class="badge {{ $badgeClass }} rounded-pill px-3 py-2">
                                     {{ $road->kondisi }}

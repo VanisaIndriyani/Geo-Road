@@ -20,12 +20,19 @@ class DashboardController extends Controller
             ->pluck('total', 'kondisi')
             ->toArray();
 
-        $rusakKabupaten = Road::selectRaw('kabupaten, COUNT(*) as total')
+        $rusakKabupatenRaw = Road::selectRaw('kabupaten, COUNT(*) as total')
             ->where('kondisi', '!=', Road::KONDISI_BAIK)
             ->groupBy('kabupaten')
-            ->orderByDesc('total')
-            ->limit(8)
-            ->get();
+            ->get()
+            ->pluck('total', 'kabupaten')
+            ->toArray();
+
+        $rusakKabupaten = collect(Road::kabupatenOptions())->map(function ($kab) use ($rusakKabupatenRaw) {
+            return (object) [
+                'kabupaten' => $kab,
+                'total' => $rusakKabupatenRaw[$kab] ?? 0,
+            ];
+        })->sortByDesc('total')->values();
 
         $recent = Road::latest()->limit(6)->get();
 

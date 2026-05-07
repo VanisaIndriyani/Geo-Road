@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'avatar',
     ];
 
     /**
@@ -45,5 +46,19 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if (!$this->avatar) {
+            return null;
+        }
+
+        $path = ltrim(str_replace('\\', '/', (string) $this->avatar), '/');
+        if (!str_contains($path, '/')) {
+            $path = 'avatars/' . $path;
+        }
+
+        return '/storage/' . $path;
     }
 }

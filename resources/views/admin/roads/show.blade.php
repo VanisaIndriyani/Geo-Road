@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $points = $road->geometryPoints();
+        $awal = count($points) >= 1 ? $points[0] : null;
+        $akhir = count($points) >= 2 ? $points[count($points) - 1] : null;
+    @endphp
     <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3" data-aos="fade-up">
         <div class="text-dark">
             <div class="h4 fw-bold mb-0">Detail Jalan</div>
@@ -30,6 +35,22 @@
                     <div class="col-7 fw-semibold">{{ number_format((float) $road->panjang, 2, ',', '.') }} Km</div>
                     <div class="col-5 text-muted">Lebar</div>
                     <div class="col-7 fw-semibold">{{ $road->lebar !== null ? number_format((float) $road->lebar, 2, ',', '.') . ' m' : '-' }}</div>
+                    <div class="col-5 text-muted">Koordinat Awal</div>
+                    <div class="col-7 fw-semibold">
+                        @if ($awal)
+                            {{ number_format((float) $awal[0], 6, '.', '') }} / {{ number_format((float) $awal[1], 6, '.', '') }}
+                        @else
+                            -
+                        @endif
+                    </div>
+                    <div class="col-5 text-muted">Koordinat Akhir</div>
+                    <div class="col-7 fw-semibold">
+                        @if ($akhir)
+                            {{ number_format((float) $akhir[0], 6, '.', '') }} / {{ number_format((float) $akhir[1], 6, '.', '') }}
+                        @else
+                            -
+                        @endif
+                    </div>
                     <div class="col-5 text-muted">Kondisi</div>
                     <div class="col-7 fw-semibold">{{ $road->kondisi }}</div>
                     <div class="col-5 text-muted">Prioritas</div>

@@ -73,8 +73,8 @@
                 </div>
             </div>
             <div class="gr-card p-4">
-                <div class="fw-bold">Kerusakan per Kabupaten</div>
-                <div class="small text-muted mb-3">Top kabupaten berdasarkan jumlah ruas kondisi tidak baik.</div>
+                <div class="fw-bold">Kerusakan per Kabupaten/Kota</div>
+                <div class="small text-muted mb-3">Top 15 kabupaten/kota berdasarkan jumlah ruas kondisi tidak baik.</div>
                 <div style="height:320px">
                     <canvas id="chartKabupaten"></canvas>
                 </div>
@@ -113,13 +113,16 @@
             if (!el || !window.Chart) return;
 
             const data = @json($kondisiBreakdown ?? []);
-            const labels = Object.keys(data);
-            const values = Object.values(data);
+            const preferredOrder = ['Baik', 'Rusak Ringan', 'Rusak Sedang', 'Rusak Berat'];
+            const labels = preferredOrder.filter(l => Object.prototype.hasOwnProperty.call(data, l)).concat(
+                Object.keys(data).filter(l => !preferredOrder.includes(l))
+            );
+            const values = labels.map(l => Number(data[l] ?? 0));
 
             const colors = {
                 'Baik': '#22c55e',
                 'Rusak Ringan': '#facc15',
-                'Rusak Sedang': '#fb923c',
+                'Rusak Sedang': '#2563eb',
                 'Rusak Berat': '#ef4444',
             };
 
@@ -144,7 +147,23 @@
 
             const kabEl = document.getElementById('chartKabupaten');
             if (!kabEl) return;
-            const kab = @json(($rusakKabupaten ?? collect())->map(fn($r) => ['kabupaten' => $r->kabupaten, 'total' => (int) $r->total])->values());
+            
+            const kabupatenLampung = @json(\App\Models\Road::kabupatenOptions());
+            const kabRaw = @json(($rusakKabupaten ?? collect())->map(fn($r) => ['kabupaten' => $r->kabupaten, 'total' => (int) $r->total])->values());
+            
+            // Pastikan semua kabupaten ada
+            const kab = kabupatenLampung.map(k => {
+                const existing = kabRaw.find(d => d.kabupaten === k);
+                return {
+                    kabupaten: k,
+                    total: existing ? existing.total : 0
+                };
+            }).sort((a, b) => b.total - a.total);
+
+            const kabWrap = kabEl.closest('[style*=\"height\"]');
+            if (kabWrap && Array.isArray(kab)) {
+                kabWrap.style.height = `${Math.max(360, (kab.length * 22) + 120)}px`;
+            }
 
             new Chart(kabEl, {
                 type: 'bar',
@@ -160,7 +179,8 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true } },
+                    indexAxis: 'y',
+                    scales: { x: { beginAtZero: true }, y: { ticks: { autoSkip: false } } },
                     plugins: { legend: { display: false } }
                 }
             });

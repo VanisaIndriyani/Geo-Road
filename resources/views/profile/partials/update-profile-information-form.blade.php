@@ -1,64 +1,44 @@
-<section>
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
-        </h2>
+<div class="fw-bold mb-3">Informasi Profil</div>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
+@if (session('status') === 'profile-updated')
+    <div class="alert alert-success rounded-4 py-2 mb-3">Profil berhasil diperbarui.</div>
+@endif
 
-    <form id="send-verification" method="post" action="{{ route('verification.send') }}">
-        @csrf
-    </form>
+<form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="row g-3">
+    @csrf
+    @method('patch')
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
-        @csrf
-        @method('patch')
-
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
-
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
-
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
-                </div>
+    <div class="col-12">
+        <label class="form-label fw-semibold">Foto Profil</label>
+        <div class="d-flex align-items-center gap-3">
+            @if ($user->avatar_url)
+                <img src="{{ $user->avatar_url }}" alt="Avatar" class="gr-avatar" style="width:56px;height:56px">
+            @else
+                <div class="rounded-circle bg-light border" style="width:56px;height:56px"></div>
             @endif
+            <div class="flex-grow-1">
+                <input type="file" name="avatar" accept="image/*" class="form-control rounded-4 @error('avatar') is-invalid @enderror">
+                @error('avatar')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                <div class="small text-muted mt-1">Format JPG/PNG. Maks 2MB.</div>
+            </div>
         </div>
+    </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+    <div class="col-md-6">
+        <label class="form-label fw-semibold">Nama</label>
+        <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-control rounded-4 @error('name') is-invalid @enderror" required>
+        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
 
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
-                >{{ __('Saved.') }}</p>
-            @endif
-        </div>
-    </form>
-</section>
+    <div class="col-md-6">
+        <label class="form-label fw-semibold">Email</label>
+        <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control rounded-4 @error('email') is-invalid @enderror" required>
+        @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+    </div>
+
+    <div class="col-12 d-grid d-md-flex justify-content-md-end">
+        <button type="submit" class="btn gr-btn-gold rounded-4 px-4">
+            <i class="bi bi-save me-1"></i> Simpan
+        </button>
+    </div>
+</form>

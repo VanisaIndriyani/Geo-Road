@@ -17,7 +17,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
     </head>
-    <body class="gr-admin">
+    <body class="gr-admin {{ request()->routeIs('admin.webgis') ? 'gr-page-webgis' : '' }}">
         <div id="gr-loader" class="gr-loader">
             <div class="text-center text-white">
                 <div class="gr-spinner mx-auto mb-3"></div>
@@ -49,7 +49,7 @@
                             <i class="bi bi-signpost-2 me-2"></i> <span class="gr-navtext">Data Jalan</span>
                         </a>
                         <a class="nav-link {{ request()->routeIs('admin.webgis') ? 'active' : '' }}" href="{{ route('admin.webgis') }}">
-                            <i class="bi bi-map me-2"></i> <span class="gr-navtext">Peta GIS</span>
+                            <i class="bi bi-map me-2"></i> <span class="gr-navtext">Peta Jaringan Jalan</span>
                         </a>
                         <a class="nav-link {{ request()->routeIs('admin.statistics') ? 'active' : '' }}" href="{{ route('admin.statistics') }}">
                             <i class="bi bi-graph-up me-2"></i> <span class="gr-navtext">Statistik</span>
@@ -86,11 +86,16 @@
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center gap-2">
-                            <i class="bi bi-person-circle"></i>
+                        <a href="{{ route('profile.edit') }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+                            @if (auth()->user()?->avatar_url)
+                                <img src="{{ auth()->user()->avatar_url }}" alt="Avatar" class="gr-avatar">
+                            @else
+                                <i class="bi bi-person-circle"></i>
+                            @endif
                             <span class="small fw-semibold">{{ auth()->user()->name ?? '-' }}</span>
-                        </div>
+                        </a>
                     </div>
+
 
                     <main class="gr-main-content p-3 p-lg-4">
                     @if (session('success') || session('error'))

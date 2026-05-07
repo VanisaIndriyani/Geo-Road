@@ -19,12 +19,19 @@ class LandingController extends Controller
             ->pluck('total', 'kondisi')
             ->toArray();
 
-        $kerusakanKabupaten = Road::selectRaw('kabupaten, COUNT(*) as total')
+        $kerusakanKabupatenRaw = Road::selectRaw('kabupaten, COUNT(*) as total')
             ->where('kondisi', '!=', Road::KONDISI_BAIK)
             ->groupBy('kabupaten')
-            ->orderByDesc('total')
-            ->limit(8)
-            ->get();
+            ->get()
+            ->pluck('total', 'kabupaten')
+            ->toArray();
+
+        $kerusakanKabupaten = collect(Road::kabupatenOptions())->map(function ($kab) use ($kerusakanKabupatenRaw) {
+            return (object) [
+                'kabupaten' => $kab,
+                'total' => $kerusakanKabupatenRaw[$kab] ?? 0,
+            ];
+        })->sortByDesc('total')->values();
 
         return view('welcome', [
             'stats' => [

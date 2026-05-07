@@ -522,8 +522,8 @@
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
                                 <div class="grlp-card-line mb-2"></div>
-                                <div class="fw-bold">Kerusakan per Kabupaten</div>
-                                <div class="text-muted small">Top kabupaten dengan jumlah data rusak terbanyak.</div>
+                                <div class="fw-bold">Kerusakan per Kabupaten/Kota</div>
+                                <div class="text-muted small">Top 15 kabupaten/kota dengan jumlah data rusak terbanyak.</div>
                             </div>
                         </div>
                         <div style="height:340px">
@@ -621,7 +621,7 @@
                         <a href="javascript:void(0)" aria-label="Email"><i class="bi bi-envelope"></i></a>
                         <a href="javascript:void(0)" aria-label="Telepon"><i class="bi bi-telephone"></i></a>
                     </div>
-                    <div class="muted text-lg-end">© {{ now()->year }} Pemerintah Provinsi Lampung</div>
+                    <div class="muted text-lg-end"> Vannesa Jacinda Agsa Nova — Magister Teknik Geomatika</div>
                 </div>
             </div>
         </div>
@@ -642,12 +642,15 @@
             L.marker([-5.45, 105.27]).addTo(miniMap).bindPopup('Provinsi Lampung');
 
             const kondisi = @json($kondisiBreakdown ?? []);
-            const labels = Object.keys(kondisi);
-            const values = Object.values(kondisi);
+            const preferredOrder = ['Baik', 'Rusak Ringan', 'Rusak Sedang', 'Rusak Berat'];
+            const labels = preferredOrder.filter(l => Object.prototype.hasOwnProperty.call(kondisi, l)).concat(
+                Object.keys(kondisi).filter(l => !preferredOrder.includes(l))
+            );
+            const values = labels.map(l => Number(kondisi[l] ?? 0));
             const colors = {
                 'Baik': '#22c55e',
                 'Rusak Ringan': '#facc15',
-                'Rusak Sedang': '#fb923c',
+                'Rusak Sedang': '#2563eb',
                 'Rusak Berat': '#ef4444',
             };
 
@@ -671,9 +674,26 @@
                 });
             }
 
+            const kabupatenLampung = @json(\App\Models\Road::kabupatenOptions());
+
             const barEl = document.getElementById('barKabupaten');
-            const barData = @json(($kerusakanKabupaten ?? collect())->map(fn($r) => ['kabupaten' => $r->kabupaten, 'total' => (int) $r->total])->values());
+            const barDataRaw = @json(($kerusakanKabupaten ?? collect())->map(fn($r) => ['kabupaten' => $r->kabupaten, 'total' => (int) $r->total])->values());
+            
+            // Pastikan semua kabupaten ada dalam barData
+            const barData = kabupatenLampung.map(kab => {
+                const existing = barDataRaw.find(d => d.kabupaten === kab);
+                return {
+                    kabupaten: kab,
+                    total: existing ? existing.total : 0
+                };
+            }).sort((a, b) => b.total - a.total);
+
             if (barEl && window.Chart) {
+                const barWrap = barEl.closest('[style*="height"]');
+                if (barWrap && Array.isArray(barData)) {
+                    barWrap.style.height = `${Math.max(360, (barData.length * 22) + 120)}px`;
+                }
+
                 new Chart(barEl, {
                     type: 'bar',
                     data: {
@@ -688,7 +708,8 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        scales: { y: { beginAtZero: true } },
+                        indexAxis: 'y',
+                        scales: { x: { beginAtZero: true }, y: { ticks: { autoSkip: false } } },
                         plugins: { legend: { display: false } }
                     }
                 });

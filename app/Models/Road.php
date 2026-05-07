@@ -45,6 +45,37 @@ class Road extends Model
         ];
     }
 
+    public static function prioritasOptions(): array
+    {
+        return [
+            'Rutin',
+            'Periodik',
+            'Peningkatan',
+            'Rekonstruksi',
+        ];
+    }
+
+    public static function kabupatenOptions(): array
+    {
+        return [
+            'Kota Bandar Lampung',
+            'Kota Metro',
+            'Kabupaten Lampung Selatan',
+            'Kabupaten Lampung Tengah',
+            'Kabupaten Lampung Utara',
+            'Kabupaten Lampung Barat',
+            'Kabupaten Lampung Timur',
+            'Kabupaten Tulang Bawang',
+            'Kabupaten Tulang Bawang Barat',
+            'Kabupaten Way Kanan',
+            'Kabupaten Mesuji',
+            'Kabupaten Pesawaran',
+            'Kabupaten Pringsewu',
+            'Kabupaten Tanggamus',
+            'Kabupaten Pesisir Barat',
+        ];
+    }
+
     public function getFotoUrlAttribute(): ?string
     {
         if (!$this->foto) {

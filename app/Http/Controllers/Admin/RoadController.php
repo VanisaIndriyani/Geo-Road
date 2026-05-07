@@ -44,6 +44,7 @@ class RoadController extends Controller
     {
         return view('admin.roads.create', [
             'kondisiOptions' => Road::kondisiOptions(),
+            'prioritasOptions' => Road::prioritasOptions(),
         ]);
     }
 
@@ -76,6 +77,7 @@ class RoadController extends Controller
         return view('admin.roads.edit', [
             'road' => $road,
             'kondisiOptions' => Road::kondisiOptions(),
+            'prioritasOptions' => Road::prioritasOptions(),
             'geometryPoints' => $road->geometryPoints(),
         ]);
     }

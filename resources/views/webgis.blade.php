@@ -214,11 +214,17 @@
             const colors = {
                 'Baik': '#22c55e',
                 'Rusak Ringan': '#facc15',
-                'Rusak Sedang': '#fb923c',
+                'Rusak Sedang': '#2563eb',
                 'Rusak Berat': '#ef4444',
             };
 
-            const map = L.map('mapPublic', { fullscreenControl: true, zoomControl: true }).setView([-5.45, 105.27], 9);
+            const map = L.map('mapPublic', {
+                fullscreenControl: false,
+                zoomControl: false
+            }).setView([-5.45, 105.27], 9);
+
+            L.control.zoom({ position: 'bottomleft' }).addTo(map);
+            L.control.fullscreen({ position: 'bottomleft' }).addTo(map);
             const osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 });
             const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, attribution: 'Tiles © Esri' });
             osm.addTo(map);
@@ -240,6 +246,8 @@
                 style: baseStyle,
                 onEachFeature: (feature, layer) => {
                     const p = feature.properties || {};
+                    const awal = (p.awal_lat != null && p.awal_lng != null) ? `${Number(p.awal_lat).toFixed(6)} / ${Number(p.awal_lng).toFixed(6)}` : '-';
+                    const akhir = (p.akhir_lat != null && p.akhir_lng != null) ? `${Number(p.akhir_lat).toFixed(6)} / ${Number(p.akhir_lng).toFixed(6)}` : '-';
                     const foto = p.foto_url
                         ? `<div class="mt-2"><div class="small text-muted mb-1">Foto Jalan</div><img src="${p.foto_url}" alt="Foto Jalan" style="width:100%;max-width:260px;height:140px;object-fit:cover;border-radius:12px" /></div>`
                         : `<div class="mt-2"><div class="small text-muted mb-1">Foto Jalan</div><div class="small text-muted">Tidak ada foto.</div></div>`;
@@ -252,6 +260,8 @@
                                 <div><b>Panjang:</b> ${(p.panjang ?? 0).toLocaleString('id-ID')} Km</div>
                                 <div><b>Kondisi:</b> ${p.kondisi ?? '-'}</div>
                                 <div><b>Penanganan:</b> ${p.prioritas ?? '-'}</div>
+                                <div><b>Koordinat Awal:</b> ${awal}</div>
+                                <div><b>Koordinat Akhir:</b> ${akhir}</div>
                             </div>
                             ${foto}
                         </div>
