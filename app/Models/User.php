@@ -59,6 +59,6 @@ class User extends Authenticatable
             $path = 'avatars/' . $path;
         }
 
-        return '/storage/' . $path;
+        return url('storage/' . $path);
     }
 }
