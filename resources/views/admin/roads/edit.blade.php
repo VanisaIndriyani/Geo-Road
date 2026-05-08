@@ -128,13 +128,19 @@
                         <div class="fw-bold">Geometry Polyline</div>
                         <div class="small text-muted">Edit polyline ruas jalan pada peta. Klik ikon garis lalu tarik titik-titik.</div>
                     </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-outline-dark rounded-4" id="btnSnapToRoads">
-                            <i class="bi bi-magic me-1"></i> Rapikan ke Jalan OSM
-                        </button>
-                        <button type="button" class="btn btn-outline-dark rounded-4" id="btnClearLine">
-                            <i class="bi bi-eraser me-1"></i> Reset Garis
-                        </button>
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input" type="checkbox" role="switch" id="autoSnap" checked>
+                            <label class="form-check-label small" for="autoSnap">Auto rapikan</label>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" class="btn btn-outline-dark rounded-4" id="btnSnapToRoads">
+                                <i class="bi bi-magic me-1"></i> Rapikan ke Jalan OSM
+                            </button>
+                            <button type="button" class="btn btn-outline-dark rounded-4" id="btnClearLine">
+                                <i class="bi bi-eraser me-1"></i> Reset Garis
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div style="height:520px" class="gr-map" id="mapRoad"></div>
@@ -241,6 +247,7 @@
             const coordAwalEl = document.getElementById('coordAwal');
             const coordAkhirEl = document.getElementById('coordAkhir');
             const btnApplyCoords = document.getElementById('btnApplyCoords');
+            const autoSnapEl = document.getElementById('autoSnap');
 
             const parseAngle = (value, isLat) => {
                 const s0 = String(value ?? '').trim();
@@ -269,13 +276,38 @@
                 return decimal;
             };
 
-            const parseLatLngPair = (text) => {
-                const parts = String(text ?? '').split('/').map(p => p.trim()).filter(Boolean);
-                if (parts.length < 2) return null;
-                const lat = parseAngle(parts[0], true);
-                const lng = parseAngle(parts[1], false);
+            const normalizeLatLng = (lat, lng) => {
                 if (lat === null || lng === null) return null;
-                return [Number(lat.toFixed(6)), Number(lng.toFixed(6))];
+                let a = Number(lat);
+                let b = Number(lng);
+                if (!Number.isFinite(a) || !Number.isFinite(b)) return null;
+
+                if (Math.abs(a) > 90 && Math.abs(b) <= 90) {
+                    [a, b] = [b, a];
+                }
+
+                if (Math.abs(a) > 90 || Math.abs(b) > 180) return null;
+                return [Number(a.toFixed(6)), Number(b.toFixed(6))];
+            };
+
+            const parseLatLngPair = (text) => {
+                const raw = String(text ?? '').trim();
+                if (!raw) return null;
+
+                let parts = [];
+                if (raw.includes('/')) {
+                    parts = raw.split('/').map(p => p.trim()).filter(Boolean);
+                } else if (raw.includes(',')) {
+                    parts = raw.split(',').map(p => p.trim()).filter(Boolean);
+                } else {
+                    parts = raw.split(/\s+/).map(p => p.trim()).filter(Boolean);
+                }
+
+                if (parts.length < 2) return null;
+
+                const a = parseAngle(parts[0], true);
+                const b = parseAngle(parts[1], false);
+                return normalizeLatLng(a, b);
             };
 
             const setCoordFieldsFromPoints = (latlngs) => {
@@ -289,16 +321,19 @@
             const applyCoordsToMap = async () => {
                 const awal = parseLatLngPair(coordAwalEl.value);
                 const akhir = parseLatLngPair(coordAkhirEl.value);
-                if (!awal || !akhir) return;
+                if (!awal || !akhir) {
+                    window.alert('Format koordinat tidak valid. Contoh: -5.714828 / 105.587492 atau -5.714828, 105.587492');
+                    return;
+                }
 
                 drawnItems.clearLayers();
                 const line = L.polyline([{ lat: awal[0], lng: awal[1] }, { lat: akhir[0], lng: akhir[1] }], { color: '#facc15', weight: 5 });
                 drawnItems.addLayer(line);
                 geometryInput.value = JSON.stringify([awal, akhir]);
                 map.fitBounds(line.getBounds(), { padding: [24, 24] });
-
-                // Otomatis rapikan setelah koordinat diterapkan
-                await snapPolylineToRoads();
+                if (autoSnapEl?.checked) {
+                    await snapPolylineToRoads();
+                }
             };
 
             const syncGeometry = () => {
@@ -360,8 +395,9 @@
                 drawnItems.clearLayers();
                 drawnItems.addLayer(e.layer);
                 syncGeometry();
-                // Otomatis rapikan setelah selesai menggambar
-                snapPolylineToRoads();
+                if (autoSnapEl?.checked) {
+                    snapPolylineToRoads();
+                }
             });
             map.on(L.Draw.Event.EDITED, syncGeometry);
             map.on(L.Draw.Event.DELETED, syncGeometry);
