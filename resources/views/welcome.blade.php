@@ -468,17 +468,6 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="70">
-                    <div class="grlp-statcard grlp-statcard--sedang grlp-hover p-4 h-100">
-                        <div class="d-flex align-items-start justify-content-between">
-                            <div>
-                                <div class="grlp-stat-label">Sedang</div>
-                                <div class="display-6 grlp-stat-value mb-0" data-counter="{{ $stats['rusak_sedang'] ?? 0 }}">0</div>
-                            </div>
-                            <span class="grlp-stat-icon"><i class="bi bi-cone-striped"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="140">
                     <div class="grlp-statcard grlp-statcard--ringan grlp-hover p-4 h-100">
                         <div class="d-flex align-items-start justify-content-between">
                             <div>
@@ -486,6 +475,17 @@
                                 <div class="display-6 grlp-stat-value mb-0" data-counter="{{ $stats['rusak_ringan'] ?? 0 }}">0</div>
                             </div>
                             <span class="grlp-stat-icon"><i class="bi bi-exclamation-circle"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3" data-aos="fade-up" data-aos-delay="140">
+                    <div class="grlp-statcard grlp-statcard--sedang grlp-hover p-4 h-100">
+                        <div class="d-flex align-items-start justify-content-between">
+                            <div>
+                                <div class="grlp-stat-label">Rusak Sedang</div>
+                                <div class="display-6 grlp-stat-value mb-0" data-counter="{{ $stats['rusak_sedang'] ?? 0 }}">0</div>
+                            </div>
+                            <span class="grlp-stat-icon"><i class="bi bi-cone-striped"></i></span>
                         </div>
                     </div>
                 </div>

@@ -150,19 +150,6 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="gr-hover-up h-100 rounded-4 p-3 text-white" style="background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 18px 50px rgba(37,99,235,.20)">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <div class="small" style="opacity:.86">Rusak Sedang</div>
-                                    <div class="fs-4 fw-bold">${sedang.toLocaleString('id-ID')}</div>
-                                </div>
-                                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:44px;height:44px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22)">
-                                    <i class="bi bi-cone-striped"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
                         <div class="gr-hover-up h-100 rounded-4 p-3 text-white" style="background:linear-gradient(135deg,#facc15 0%,#eab308 100%);box-shadow:0 18px 50px rgba(250,204,21,.18)">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
@@ -171,6 +158,19 @@
                                 </div>
                                 <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:44px;height:44px;background:rgba(255,255,255,.26);border:1px solid rgba(255,255,255,.34)">
                                     <i class="bi bi-exclamation-circle" style="color:rgba(15,23,42,.92)"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="gr-hover-up h-100 rounded-4 p-3 text-white" style="background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 18px 50px rgba(37,99,235,.20)">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <div class="small" style="opacity:.86">Rusak Sedang</div>
+                                    <div class="fs-4 fw-bold">${sedang.toLocaleString('id-ID')}</div>
+                                </div>
+                                <div class="rounded-4 d-inline-flex align-items-center justify-content-center" style="width:44px;height:44px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.22)">
+                                    <i class="bi bi-cone-striped"></i>
                                 </div>
                             </div>
                         </div>
