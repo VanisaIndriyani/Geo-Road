@@ -28,7 +28,7 @@
         body{margin:0}
         .grw-body{background:var(--gr-bg);color:var(--gr-text)}
         .gr-webgis{height:100vh}
-        #mapPublic{height:100vh}
+        #mapPublic{height:100vh;height:100dvh}
 
         .grw-navbar{
             background: rgba(255,255,255,.70);
@@ -122,6 +122,19 @@
             color: rgba(15,23,42,.90) !important;
         }
         .leaflet-bar a:hover{background: rgba(255,255,255,.96) !important}
+
+        .leaflet-bottom .leaflet-control{
+            margin-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+        .leaflet-top .leaflet-control{
+            margin-top: calc(16px + env(safe-area-inset-top));
+        }
+        .leaflet-right .leaflet-control{
+            margin-right: calc(16px + env(safe-area-inset-right));
+        }
+        .leaflet-left .leaflet-control{
+            margin-left: calc(16px + env(safe-area-inset-left));
+        }
 
         @media (max-width: 575.98px){
             .gr-webgis-ui{left: 12px; width: calc(100vw - 24px)}

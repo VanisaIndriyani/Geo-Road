@@ -30,6 +30,18 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@2.4.0/Control.FullScreen.css">
     <style>
         .leaflet-control-layers{border-radius:14px;overflow:hidden}
+        .leaflet-bottom .leaflet-control{
+            margin-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+        .leaflet-top .leaflet-control{
+            margin-top: calc(16px + env(safe-area-inset-top));
+        }
+        .leaflet-right .leaflet-control{
+            margin-right: calc(16px + env(safe-area-inset-right));
+        }
+        .leaflet-left .leaflet-control{
+            margin-left: calc(16px + env(safe-area-inset-left));
+        }
         .gr-legend-float{
             background: rgba(255,255,255,0.95);
             border-radius: 12px;
