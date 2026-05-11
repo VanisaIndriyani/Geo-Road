@@ -394,11 +394,11 @@
                     <div class="d-flex flex-wrap gap-3" data-aos="fade-up" data-aos-delay="260">
                         @auth
                             <a href="{{ route('dashboard') }}" class="btn grlp-btn-primary rounded-4 px-4 py-2">
-                                <i class="bi bi-compass me-2"></i> Jelajahi Sistem
+                                <i class="bi bi-speedometer2 me-2"></i> Dashboard (Admin)
                             </a>
                         @else
                             <a href="{{ route('login') }}" class="btn grlp-btn-primary rounded-4 px-4 py-2">
-                                <i class="bi bi-compass me-2"></i> Jelajahi Sistem
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login (Admin)
                             </a>
                         @endauth
                         <a href="{{ route('webgis.public') }}" class="btn grlp-btn-outline rounded-4 px-4 py-2">
